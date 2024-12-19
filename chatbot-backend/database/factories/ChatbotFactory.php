@@ -4,11 +4,20 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+use App\Models\Chatbot;
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Chatbot>
  */
 class ChatbotFactory extends Factory
 {
+
+        /**
+     * The name of the factory's corresponding model.
+     *
+     * @var string
+     */
+    protected $model = Chatbot::class;
     /**
      * Define the model's default state.
      *
