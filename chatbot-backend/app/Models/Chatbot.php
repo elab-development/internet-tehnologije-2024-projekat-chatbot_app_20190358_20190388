@@ -7,7 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Chatbot extends Model
 {
     protected $fillable = [
-        'version'        
+        'chatbot_name',
+        'version',
+        'rating'        
     ];
 
     /**
