@@ -38,11 +38,13 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
-    protected function casts(): array
+
+    /**
+     * Relationship: A User has many ChatHistories.
+     */
+    public function chatHistories()
     {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
+        return $this->hasMany(ChatHistory::class);
     }
+
 }
