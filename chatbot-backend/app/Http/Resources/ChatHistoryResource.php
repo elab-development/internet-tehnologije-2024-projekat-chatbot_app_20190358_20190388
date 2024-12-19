@@ -14,6 +14,15 @@ class ChatHistoryResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'user_id' => $this->user_id,
+            'chatbot_id' => $this->chatbot_id,
+            'message' => $this->message,
+            'response' => $this->response,
+            'timestamp' => $this->timestamp,
+            'user' => new UserResource($this->whenLoaded('user')),
+            'chatbot' => new ChatbotResource($this->whenLoaded('chatbot')),
+        ];
     }
 }
