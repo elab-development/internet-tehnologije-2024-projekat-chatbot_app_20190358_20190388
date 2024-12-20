@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +23,9 @@ class UserController extends Controller
         $adminId = Auth::id();
         $users = User::where('id', '!=', $adminId)->get();
 
-        return response()->json(['users' => $users], 200);
+        return response()->json([
+            'users' => UserResource::collection($users)
+        ], 200);
     }
 
     /**
@@ -36,13 +39,16 @@ class UserController extends Controller
         if (!Auth::check() || Auth::user()->user_role !== 'admin') {
             return response()->json(['error' => 'Unauthorized action.'], 403);
         }
+
         $user = User::find($id);
 
         if (!$user) {
             return response()->json(['error' => 'User not found.'], 404);
         }
 
-        return response()->json(['user' => $user], 200);
+        return response()->json([
+            'user' => new UserResource($user)
+        ], 200);
     }
 
     /**
@@ -68,7 +74,7 @@ class UserController extends Controller
         return response()->json(['message' => 'User deleted successfully.'], 200);
     }
 
-     /**
+    /**
      * Search users by name or email with optional pagination.
      *
      * @param Request $request
@@ -79,16 +85,22 @@ class UserController extends Controller
         if (!Auth::check() || Auth::user()->user_role !== 'admin') {
             return response()->json(['error' => 'Unauthorized action.'], 403);
         }
+
         $search = $request->input('search');
-        $perPage = $request->input('per_page', 10); 
+        $perPage = $request->input('per_page', 10);
 
         $users = User::where(function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
-            })
-            ->paginate($perPage);
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+        })->paginate($perPage);
 
-        return response()->json($users, 200);
+        return response()->json([
+            'users' => UserResource::collection($users->items()),
+            'pagination' => [
+                'current_page' => $users->currentPage(),
+                'total_pages' => $users->lastPage(),
+                'total_users' => $users->total(),
+            ]
+        ], 200);
     }
 }
-
