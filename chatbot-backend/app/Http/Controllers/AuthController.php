@@ -68,7 +68,7 @@ class AuthController extends Controller
     {   
         $validated = $request->validate([
             'email' => 'required|string|email',
-            'new_password' => 'required|string|min:8'
+            'set_password' => 'required|string|min:8'
         ]);
 
         if (!Auth::check() || Auth::user()->user_role === 'admin') {
