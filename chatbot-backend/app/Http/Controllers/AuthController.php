@@ -84,7 +84,7 @@ class AuthController extends Controller
         }
         
         $user->update([
-            'password' => Hash::make($validated['new_password']), 
+            'password' => Hash::make($validated['set_password']), 
         ]);
     
         return response()->json([
