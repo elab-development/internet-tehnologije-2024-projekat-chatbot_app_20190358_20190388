@@ -63,5 +63,33 @@ class AuthController extends Controller
         $request->user()->tokens()->delete();
         return response()->json(['message' => `User $user->email logged out successfully.`]);
     }
+
+    public function resetPassword(Request $request)
+    {   
+        $validated = $request->validate([
+            'email' => 'required|string|email',
+            'new_password' => 'required|string|min:8'
+        ]);
+
+        if (!Auth::check() || Auth::user()->user_role === 'admin') {
+            return response()->json(['error' => 'Unauthorized action.'], 403);
+        }
+    
+        $user = User::where('email', $validated['email'])->first();
+        
+        if (!$user) {
+            return response()->json([
+                'message' => 'The email you have entered does not exist.',
+            ], 404);
+        }
+        
+        $user->update([
+            'password' => Hash::make($validated['new_password']), 
+        ]);
+    
+        return response()->json([
+            'message' => 'Your password has been reset.',
+        ], 200);
+    }
 }
 
