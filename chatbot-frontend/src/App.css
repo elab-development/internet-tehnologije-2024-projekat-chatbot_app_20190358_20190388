@@ -1,38 +1,54 @@
-.App {
-  text-align: center;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* glavne boje u aplikaciji */
+:root {
+  --primary-dark: #283739;
+  --primary-light: #2C5D63;
+  --primary-medium:#548a81;
+  --primary-white: #F5F5F5;
+  --accent: #A9C52F;
+  --accent-hover: #90a141;
+  --text-light: #F5F5F5;
+  --text-dark: #222222;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+body {
+  background-color: var(--primary-medium);
+  color: var(--text-light);
+  line-height: 1.6;
+  font-size: 16px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-white);
 }
 
-.App-link {
-  color: #61dafb;
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--primary-white);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--accent);
 }
+
+p {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-light);
+}
+
+
+
+
