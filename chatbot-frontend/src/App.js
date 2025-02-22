@@ -9,6 +9,7 @@ import {
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Homepage from "./pages/Home";
+import AboutUs from "./pages/AboutUs";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import React, { useState, useEffect } from "react";
@@ -68,9 +69,9 @@ const AppContent = ({ userData, setUserData }) => {
       {showNavbar && <Navbar user={userData} onLogout={handleLogout} />}
       <Routes>
         <Route path="/" element={<Login setUserData={setUserData} />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/home" element={<Homepage />} />
-        <Route path="/about" element={<h1>About Us Page</h1>} />
+        <Route path="/register" element={<Register/>} />
+        <Route path="/home" element={<Homepage/>} />
+        <Route path="/about" element={<AboutUs/>} />
         <Route path="/chat" element={<h1>Chat Page</h1>} />
         <Route
           path="/subscription"

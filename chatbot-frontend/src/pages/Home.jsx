@@ -42,7 +42,7 @@ const HomePage = () => {
           variant="h3"
           sx={{
             fontFamily: "'Press Start 2P', cursive",
-            fontSize: { xs: "20px", md: "36px" },
+            fontSize: { xs: "32px", md: "50px" },
             textShadow: "0px 0px 25px rgba(255, 0, 127, 1)",
             background: "linear-gradient(90deg, #ff007f, #ffcc00, #00eaff)",
             WebkitBackgroundClip: "text",
