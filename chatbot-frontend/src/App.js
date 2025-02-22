@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from "react-route
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import React, { useState, useEffect } from "react";
 
 function App() {
@@ -61,6 +62,7 @@ const AppContent = ({ userData, onLogout, setUserData }) => {
         <Route path="/chat" element={<h1>Chat Page</h1>} />
         <Route path="/subscription" element={<h1>Subscription Plan Page</h1>} />
       </Routes>
+      {showNavbar && <Footer/>}
     </>
   );
 };
