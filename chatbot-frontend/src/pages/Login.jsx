@@ -36,13 +36,18 @@ const Login = ({ setUserData }) => {
         throw new Error(data.error || "Login failed. Please try again.");
       }
 
+      // Extract user data
       const { id, role, name } = data.user;
       const { token } = data;
 
+      // Update sessionStorage
       sessionStorage.setItem("userId", id);
       sessionStorage.setItem("userRole", role);
       sessionStorage.setItem("userName", name);
       sessionStorage.setItem("userToken", token);
+
+      // *** Update the React state ***
+      setUserData({ id, role, name, token });
 
       alert("Welcome to Aurora AI!");
 

@@ -73,8 +73,24 @@ const Navbar = ({ user, onLogout }) => {
             {user ? `Welcome, ${user.name}` : "Guest"}
           </Typography>
 
-          {/* Logout Button with Loading Animation */}
-          <Button text="Logout" color="secondary" onClick={onLogout} delay={2000} loadingPosition="start" />
+          {/* Logout Button (Gradient) */}
+          <Button
+            text="Logout"
+            onClick={onLogout}
+            delay={2000}
+            loadingPosition="start"
+            sx={{
+              // Match the pink → orange gradient from the "Learn More" button
+              background: "linear-gradient(90deg, #ff5b99, #ff9966)",
+              color: "#fff",
+              fontWeight: "bold",
+              boxShadow: "0 0 20px rgba(255, 91, 153, 0.6)",
+              "&:hover": {
+                boxShadow: "0 0 40px rgba(255, 91, 153, 1)",
+                transform: "scale(1.05)",
+              },
+            }}
+          />
 
           {/* Mobile Menu Button */}
           <IconButton
