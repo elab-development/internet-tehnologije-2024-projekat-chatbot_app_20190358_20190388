@@ -1,5 +1,14 @@
 import React, { useState } from "react";
-import { AppBar, Toolbar, Typography, Box, IconButton, Menu, MenuItem, Button as MUIButton } from "@mui/material";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Box,
+  IconButton,
+  Menu,
+  MenuItem,
+  Button as MUIButton,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
 import Button from "../components/Button"; // Reusable MUI Button for Logout
@@ -27,9 +36,24 @@ const Navbar = ({ user, onLogout }) => {
   return (
     <AppBar position="static" sx={{ backgroundColor: "#1a1a2e" }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        {/* Logo Section */}
-        <Box display="flex" alignItems="center">
-          <img src="/assets/logo.png" alt="Aurora AI Logo" style={{ width: 50, height: 50, marginRight: 10 }} />
+        {/* Clickable Logo Section */}
+        <Box
+          display="flex"
+          alignItems="center"
+          sx={{
+            cursor: "pointer",
+            "&:hover": {
+              transform: "scale(1.05)",
+              transition: "0.3s ease-in-out",
+            },
+          }}
+          onClick={() => navigate("/home")} // 👈 Click navigates to Home
+        >
+          <img
+            src="/assets/logo.png"
+            alt="Aurora AI Logo"
+            style={{ width: 50, height: 50, marginRight: 10 }}
+          />
           <Typography
             variant="h5"
             fontWeight="bold"
@@ -78,10 +102,7 @@ const Navbar = ({ user, onLogout }) => {
           <Button
             text="Logout"
             onClick={onLogout}
-            delay={2000}
-            loadingPosition="start"
             sx={{
-              // Match the pink → orange gradient from the "Learn More" button
               background: "linear-gradient(90deg, #ff5b99, #ff9966)",
               color: "#fff",
               fontWeight: "bold",
