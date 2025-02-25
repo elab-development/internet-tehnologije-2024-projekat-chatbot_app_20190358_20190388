@@ -8,7 +8,23 @@ const Chat = ({ userData }) => {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [displayedText, setDisplayedText] = useState("");
   const chatContainerRef = useRef(null);
+  const fullText = "Aurora AI Chat";
+
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      setDisplayedText(fullText.substring(0, index));
+      index++;
+
+      if (index > fullText.length) {
+        clearInterval(interval);
+      }
+    }, 80);
+
+    return () => clearInterval(interval);
+  }, []);
 
   console.log("Chat component mounted. Received userData:", userData);
 
@@ -89,6 +105,7 @@ const Chat = ({ userData }) => {
       }}
     >
       <Container maxWidth="lg">
+        {/* Typewriter Animated Title */}
         <Typography
           variant="h2"
           sx={{
@@ -101,9 +118,10 @@ const Chat = ({ userData }) => {
             textShadow: "0px 0px 30px rgba(255, 0, 127, 1)",
           }}
         >
-          Aurora AI Chat
+          {displayedText}
         </Typography>
 
+        {/* Chat History Display */}
         <Paper
           elevation={3}
           sx={{
@@ -133,7 +151,10 @@ const Chat = ({ userData }) => {
           ) : (
             chatHistory.map((msg, index) => (
               <React.Fragment key={msg.id}>
+                {/* ✅ User Message (Right) */}
                 <ChatBox message={{ message: msg.message, timestamp: msg.timestamp }} isUser={true} />
+
+                {/* ✅ AI Response (Left) */}
                 <ChatBox message={{ message: msg.response, timestamp: msg.timestamp }} isUser={false} />
               </React.Fragment>
             ))

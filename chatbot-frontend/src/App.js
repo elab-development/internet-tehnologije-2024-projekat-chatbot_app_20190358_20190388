@@ -11,6 +11,7 @@ import Register from "./pages/Register";
 import Homepage from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import Chat from "./pages/Chat"; 
+import GenerateImage from "./pages/GenerateImage"; 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import React, { useState, useEffect } from "react";
@@ -67,6 +68,7 @@ const AppContent = ({ userData, setUserData }) => {
         <Route path="/home" element={<Homepage />} />
         <Route path="/about" element={<AboutUs />} />
         <Route path="/chat" element={<Chat userData={userData} />} /> 
+        <Route path="/generate-image" element={<GenerateImage/>} /> 
         <Route path="/subscription" element={<h1>Subscription Plan Page</h1>} />
       </Routes>
       {showNavbar && <Footer />}

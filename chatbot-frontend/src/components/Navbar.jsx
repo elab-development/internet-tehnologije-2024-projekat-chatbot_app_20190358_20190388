@@ -20,6 +20,7 @@ const Navbar = ({ user, onLogout }) => {
     { text: "Home", path: "/home" },
     { text: "About Us", path: "/about" },
     { text: "Chat", path: "/chat" },
+    { text: "Generate Image", path: "/generate-image" },
     { text: "Subscription Plan", path: "/subscription" },
   ];
 
