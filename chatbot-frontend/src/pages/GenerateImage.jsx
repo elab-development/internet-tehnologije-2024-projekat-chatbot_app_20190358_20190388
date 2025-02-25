@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Container, TextField, CircularProgress, Typography, Paper, Grid } from "@mui/material";
+import { Box, Container, TextField, CircularProgress, Typography, Paper } from "@mui/material";
 import Button from "../components/Button";
 
 const GenerateImage = () => {
@@ -106,7 +106,7 @@ const GenerateImage = () => {
 
         {/* Error Message */}
         {error && (
-          <Typography color="error" sx={{ mb: 3 }}>
+          <Typography color="error" sx={{ mb: 3, fontSize: "20px", fontWeight: "bold" }}>
             {error}
           </Typography>
         )}
@@ -115,24 +115,38 @@ const GenerateImage = () => {
         <Paper
           elevation={3}
           sx={{
-            minHeight: "400px",
-            maxHeight: "500px",
-            overflowY: "auto",
-            p: 2,
-            borderRadius: 2,
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            width: "100%",
+            height: "500px",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
+            borderRadius: 2,
+            backgroundColor: "rgba(255, 255, 255, 0.1)",
             mt: 2,
+            overflow: "hidden",
           }}
         >
           {loading ? (
             <CircularProgress color="secondary" />
           ) : image ? (
-            <img src={image} alt="Generated AI" style={{ width: "100%", borderRadius: "10px" }} />
+            <img 
+              src={image} 
+              alt="Generated AI" 
+              style={{ 
+                width: "100%", 
+                height: "100%", 
+                maxWidth: "100%", 
+                maxHeight: "100%", 
+                objectFit: "contain", // Ensures full image is visible without cropping
+                display: "block", // Removes unwanted spaces
+                borderRadius: "10px" 
+              }} 
+            />
           ) : (
-            <Typography variant="body1" color="textSecondary">
+            <Typography 
+              variant="body1" 
+              sx={{ fontSize: "25px", fontWeight: "bold", color: "white" }}
+            >
               No images generated yet.
             </Typography>
           )}

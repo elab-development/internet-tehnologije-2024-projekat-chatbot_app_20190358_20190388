@@ -145,7 +145,11 @@ const Chat = ({ userData }) => {
           ref={chatContainerRef}
         >
           {chatHistory.length === 0 ? (
-            <Typography variant="body1" color="textSecondary" textAlign="center">
+            <Typography variant="body1" color="textSecondary" textAlign="center" sx={{
+              fontSize: "25px",
+              color:"white",
+              fontWeight:"bold"
+            }}>
               No messages found.
             </Typography>
           ) : (
