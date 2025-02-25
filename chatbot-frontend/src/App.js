@@ -15,6 +15,7 @@ import GenerateImage from "./pages/GenerateImage";
 import SubscriptionPlan from "./pages/SubscriptionPlan"; 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import DynamicBreadcrumbs from "./components/DynamicBreadcrumbs";
 import React, { useState, useEffect } from "react";
 
 function App() {
@@ -52,6 +53,7 @@ const AppContent = ({ userData, setUserData }) => {
   }, [userData, location.pathname, navigate]);
 
   let showNavbar = Boolean(userData.token);
+  let showBreadcrumbs = showNavbar && location.pathname !== "/home";
 
   const handleLogout = () => {
     sessionStorage.clear();
@@ -63,6 +65,7 @@ const AppContent = ({ userData, setUserData }) => {
   return (
     <>
       {showNavbar && <Navbar user={userData} onLogout={handleLogout} />}
+      {showBreadcrumbs && <DynamicBreadcrumbs />} 
       <Routes>
         <Route path="/" element={<Login setUserData={setUserData} />} />
         <Route path="/register" element={<Register />} />
