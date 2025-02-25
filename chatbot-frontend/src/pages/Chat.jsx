@@ -1,15 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Container, TextField, Paper, Typography } from "@mui/material";
-import axios from "axios";
 import ChatBox from "../components/ChatBox";
 import Button from "../components/Button";
+import useChatHistory from "../hooks/useChatHistory"; // Import custom hook
 
 const Chat = ({ userData }) => {
-  const [chatHistory, setChatHistory] = useState([]);
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const { chatHistory, message, setMessage, loading, sendMessage, chatContainerRef } = useChatHistory(userData);
   const [displayedText, setDisplayedText] = useState("");
-  const chatContainerRef = useRef(null);
   const fullText = "Aurora AI Chat";
 
   useEffect(() => {
@@ -25,62 +22,6 @@ const Chat = ({ userData }) => {
 
     return () => clearInterval(interval);
   }, []);
-
-  console.log("Chat component mounted. Received userData:", userData);
-
-  useEffect(() => {
-    if (!userData?.token) {
-      console.warn("userData not loaded yet. Waiting...");
-      return;
-    }
-    fetchChatHistory();
-  }, [userData]);
-
-  useEffect(() => {
-    chatContainerRef.current?.scrollTo(0, chatContainerRef.current.scrollHeight);
-  }, [chatHistory]);
-
-  const fetchChatHistory = async () => {
-    try {
-      const response = await axios.get("http://127.0.0.1:8000/api/chat-history", {
-        headers: { Authorization: `Bearer ${userData.token}` },
-      });
-
-      console.log("API Response:", response.data);
-
-      if (response.data.chat_history && Array.isArray(response.data.chat_history)) {
-        setChatHistory(response.data.chat_history);
-      } else {
-        console.warn("Unexpected response format:", response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching chat history:", error);
-    }
-  };
-
-  const sendMessage = async () => {
-    if (!message.trim()) return;
-    setLoading(true);
-
-    try {
-      const response = await axios.post(
-        "http://127.0.0.1:8000/api/chat-history",
-        { chatbot_id: 1, message },
-        { headers: { Authorization: `Bearer ${userData.token}` } }
-      );
-
-      console.log("Sent message response:", response.data);
-
-      if (response.data.chat_history) {
-        setChatHistory((prev) => [...prev, response.data.chat_history]);
-        setMessage("");
-      }
-    } catch (error) {
-      console.error("Error sending message:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   if (!userData || !userData.token) {
     return (
@@ -145,11 +86,16 @@ const Chat = ({ userData }) => {
           ref={chatContainerRef}
         >
           {chatHistory.length === 0 ? (
-            <Typography variant="body1" color="textSecondary" textAlign="center" sx={{
-              fontSize: "25px",
-              color:"white",
-              fontWeight:"bold"
-            }}>
+            <Typography
+              variant="body1"
+              color="textSecondary"
+              textAlign="center"
+              sx={{
+                fontSize: "25px",
+                color: "white",
+                fontWeight: "bold",
+              }}
+            >
               No messages found.
             </Typography>
           ) : (
