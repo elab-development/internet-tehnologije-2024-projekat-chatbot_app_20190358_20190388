@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Box, Container, TextField, CircularProgress, Typography, Paper } from "@mui/material";
 import Button from "../components/Button";
+import useImageGenerator from "../hooks/useImageGenerator"; // Import custom hook
 
 const GenerateImage = () => {
+  const { image, loading, error, generateImage } = useImageGenerator(); // Use custom hook
   const [prompt, setPrompt] = useState("");
-  const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
   const [displayedText, setDisplayedText] = useState("");
   const fullText = "AI Image Generator";
 
@@ -23,26 +22,6 @@ const GenerateImage = () => {
 
     return () => clearInterval(interval);
   }, []);
-
-  const handleGenerate = async () => {
-    if (!prompt.trim()) return;
-    setLoading(true);
-    setError(null);
-
-    try {
-      const response = await fetch(`https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}`);
-      if (!response.ok) {
-        throw new Error("Failed to generate image.");
-      }
-      
-      setImage(response.url);
-    } catch (error) {
-      setError("❌ Failed to generate image. Please try again.");
-      console.error("❌ Error generating image:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return (
     <Box
@@ -89,7 +68,7 @@ const GenerateImage = () => {
           />
           <Button
             text="Generate"
-            onClick={handleGenerate}
+            onClick={() => generateImage(prompt)}
             disabled={loading}
             sx={{
               fontSize: "16px",
@@ -137,8 +116,8 @@ const GenerateImage = () => {
                 height: "100%", 
                 maxWidth: "100%", 
                 maxHeight: "100%", 
-                objectFit: "contain", // Ensures full image is visible without cropping
-                display: "block", // Removes unwanted spaces
+                objectFit: "contain", 
+                display: "block", 
                 borderRadius: "10px" 
               }} 
             />
