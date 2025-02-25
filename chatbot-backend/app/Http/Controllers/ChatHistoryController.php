@@ -10,6 +10,23 @@ use Illuminate\Support\Facades\Auth;
 
 class ChatHistoryController extends Controller
 {
+
+    public function index()
+    {
+        $authUser = Auth::user();
+        if ($authUser->user_role !== 'regular') {
+            return response()->json(['error' => 'Unauthorized.'], 403);
+        }
+    
+        $chatHistories = ChatHistory::where('user_id', $authUser->id)
+                            ->with(['user', 'chatbot']) 
+                            ->get();
+    
+        return response()->json([
+            'chat_history' => ChatHistoryResource::collection($chatHistories),
+        ]);
+    }
+    
     /**
      * Create a new chat history entry and process a chat message.
      *

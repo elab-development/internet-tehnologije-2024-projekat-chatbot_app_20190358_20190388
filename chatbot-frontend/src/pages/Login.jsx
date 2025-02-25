@@ -31,27 +31,28 @@ const Login = ({ setUserData }) => {
       });
 
       const data = await response.json();
+      console.log(data);
 
       if (!response.ok) {
         throw new Error(data.error || "Login failed. Please try again.");
       }
 
       // Extract user data
-      const { id, role, name } = data.user;
+      const { id, user_role, name } = data.user;
       const { token } = data;
 
       // Update sessionStorage
       sessionStorage.setItem("userId", id);
-      sessionStorage.setItem("userRole", role);
+      sessionStorage.setItem("userRole", user_role);
       sessionStorage.setItem("userName", name);
       sessionStorage.setItem("userToken", token);
 
-      // *** Update the React state ***
-      setUserData({ id, role, name, token });
+      //Update the React state 
+      setUserData({ id, user_role, name, token });
 
       alert("Welcome to Aurora AI!");
 
-      navigate(role === "admin" ? "/dashboard" : "/home");
+      navigate(user_role === "admin" ? "/dashboard" : "/home");
     } catch (error) {
       setError(error.message || "Something went wrong. Please try again.");
     }

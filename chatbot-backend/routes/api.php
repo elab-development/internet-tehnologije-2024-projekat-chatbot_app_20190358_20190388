@@ -13,6 +13,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/chatbots/{id}/version', [ChatbotController::class, 'updateVersion']); 
     Route::put('/chatbots/{id}', [ChatbotController::class, 'updateChatbot']);
 
+    Route::get('/chat-history', [ChatHistoryController::class, 'index']);
     Route::post('/chat-history', [ChatHistoryController::class, 'create']); 
     Route::delete('/chat-history/{id}', [ChatHistoryController::class, 'destroy']);
 
