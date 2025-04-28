@@ -1,0 +1,72 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* glavne boje u aplikaciji */
+:root {
+  --primary-dark: #283739;
+  --primary-light: #2C5D63;
+  --primary-medium:#548a81;
+  --primary-white: #F5F5F5;
+  --accent: #A9C52F;
+  --accent-hover: #90a141;
+  --text-light: #F5F5F5;
+  --text-dark: #222222;
+}
+
+body {
+  background-color: var(--primary-medium);
+  color: var(--text-light);
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-white);
+}
+
+h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--primary-white);
+}
+
+h3 {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+p {
+  font-size: 1rem;
+  font-weight: 400;
+  color: var(--text-light);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1); 
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(90deg, #ff5b99, #ff9966);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(90deg, #f093fb, #f5576c);
+}
+
+
+
+
