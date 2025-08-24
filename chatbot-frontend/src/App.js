@@ -12,7 +12,8 @@ import Homepage from "./pages/Home";
 import AboutUs from "./pages/AboutUs";
 import Chat from "./pages/Chat"; 
 import GenerateImage from "./pages/GenerateImage"; 
-import SubscriptionPlan from "./pages/SubscriptionPlan"; 
+import SubscriptionPlan from "./pages/SubscriptionPlan";
+import AdvancedModel from "./pages/AdvancedModel"; 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import DynamicBreadcrumbs from "./components/DynamicBreadcrumbs";
@@ -75,6 +76,7 @@ const AppContent = ({ userData, setUserData }) => {
         <Route path="/chat" element={<Chat userData={userData} />} /> 
         <Route path="/generate-image" element={<GenerateImage/>} /> 
         <Route path="/subscription" element={<SubscriptionPlan/>} />
+        <Route path="/advanced-model" element={<AdvancedModel userData={userData} />} />
       </Routes>
       {showNavbar && <Footer />}
     </>
