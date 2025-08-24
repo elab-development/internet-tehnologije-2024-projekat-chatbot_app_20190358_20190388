@@ -85,26 +85,27 @@ const Chat = ({ userData }) => {
           }}
           ref={chatContainerRef}
         >
-          {chatHistory.length === 0 ? (
+          {loading ? (
+            <Typography
+              variant="body1"
+              textAlign="center"
+              sx={{ fontSize: "25px", color: "white", fontWeight: "bold" }}
+            >
+              Loading messages...
+            </Typography>
+          ) : chatHistory.length === 0 ? (
             <Typography
               variant="body1"
               color="textSecondary"
               textAlign="center"
-              sx={{
-                fontSize: "25px",
-                color: "white",
-                fontWeight: "bold",
-              }}
+              sx={{ fontSize: "25px", color: "white", fontWeight: "bold" }}
             >
               No messages found.
             </Typography>
           ) : (
             chatHistory.map((msg, index) => (
               <React.Fragment key={msg.id}>
-                {/* ✅ User Message (Right) */}
                 <ChatBox message={{ message: msg.message, timestamp: msg.timestamp }} isUser={true} />
-
-                {/* ✅ AI Response (Left) */}
                 <ChatBox message={{ message: msg.response, timestamp: msg.timestamp }} isUser={false} />
               </React.Fragment>
             ))

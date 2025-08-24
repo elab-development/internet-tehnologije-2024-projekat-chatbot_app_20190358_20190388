@@ -1,8 +1,10 @@
 import React from "react";
-import { AppBar, Box, Typography, IconButton, Container } from "@mui/material";
-import { Facebook, Instagram, Twitter } from "@mui/icons-material"; // X is Twitter in MUI
+import { AppBar, Box, Typography, Container } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const Footer = () => {
+  const navigate = useNavigate();
+
   return (
     <AppBar
       position="static"
@@ -14,10 +16,26 @@ const Footer = () => {
       }}
     >
       <Container maxWidth="lg">
-
-        {/* Aurora AI Logo (Centered) */}
-        <Box display="flex" justifyContent="center" alignItems="center" mb={1}>
-          <img src="/assets/logo.png" alt="Aurora AI Logo" style={{ width: 50, height: 50, marginRight: 10 }} />
+        {/* Clickable Aurora AI Logo */}
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          mb={1}
+          sx={{
+            cursor: "pointer",
+            "&:hover": {
+              transform: "scale(1.05)",
+              transition: "0.3s ease-in-out",
+            },
+          }}
+          onClick={() => navigate("/home")} // 👈 Click navigates to Home
+        >
+          <img
+            src="/assets/logo.png"
+            alt="Aurora AI Logo"
+            style={{ width: 50, height: 50, marginRight: 10 }}
+          />
           <Typography
             variant="h5"
             fontWeight="bold"
@@ -31,7 +49,7 @@ const Footer = () => {
           </Typography>
         </Box>
 
-        {/* Support Email (Below Logo) */}
+        {/* Support Email */}
         <Typography variant="body2" color="gray">
           Need help? Contact us at{" "}
           <Typography

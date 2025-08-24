@@ -4,17 +4,13 @@ import axios from "axios";
 const useChatHistory = (userData) => {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const chatContainerRef = useRef(null);
 
   useEffect(() => {
     if (!userData?.token) return;
     fetchChatHistory();
   }, [userData]);
-
-  useEffect(() => {
-    chatContainerRef.current?.scrollTo(0, chatContainerRef.current.scrollHeight);
-  }, [chatHistory]);
 
   const fetchChatHistory = async () => {
     try {
@@ -23,18 +19,23 @@ const useChatHistory = (userData) => {
       });
 
       if (response.data.chat_history && Array.isArray(response.data.chat_history)) {
-        setChatHistory(response.data.chat_history);
+        setTimeout(() => {
+          setChatHistory(response.data.chat_history);
+          setLoading(false); // Loading finished, show messages
+        }, 2000); // Simulated delay for a smoother transition
       } else {
-        console.warn("Unexpected response format:", response.data);
+        setLoading(false);
       }
     } catch (error) {
       console.error("Error fetching chat history:", error);
+      setLoading(false);
     }
   };
 
   const sendMessage = async () => {
     if (!message.trim()) return;
-    setLoading(true);
+    setChatHistory((prev) => [...prev, { message, response: "..." }]); // Show temporary loading response
+    setMessage("");
 
     try {
       const response = await axios.post(
@@ -44,24 +45,14 @@ const useChatHistory = (userData) => {
       );
 
       if (response.data.chat_history) {
-        setChatHistory((prev) => [...prev, response.data.chat_history]);
-        setMessage("");
+        setChatHistory((prev) => [...prev.slice(0, -1), response.data.chat_history]);
       }
     } catch (error) {
       console.error("Error sending message:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
-  return {
-    chatHistory,
-    message,
-    setMessage,
-    loading,
-    sendMessage,
-    chatContainerRef,
-  };
+  return { chatHistory, message, setMessage, loading, sendMessage, chatContainerRef };
 };
 
 export default useChatHistory;
