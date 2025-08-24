@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   AppBar,
   Toolbar,
@@ -11,49 +11,96 @@ import {
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useNavigate } from "react-router-dom";
-import Button from "../components/Button"; // Reusable MUI Button for Logout
+import Button from "../components/Button";
+
+const API_BASE = "http://127.0.0.1:8000/api";
 
 const Navbar = ({ user, onLogout }) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const handleMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget);
+  // read session values (works with your storage keys)
+  const token = useMemo(() => sessionStorage.getItem("userToken") || null, []);
+  const subscriptionId = useMemo(() => {
+    const v = sessionStorage.getItem("subscription_id");
+    return v && v !== "null" && v !== "" ? Number(v) : null;
+  }, []);
+
+  const [tier, setTier] = useState("free"); // "free" | "premium" | "pro"
+
+  // Normalize plan name -> tier
+  const normalizeTier = (name) => {
+    const n = (name || "").toLowerCase();
+    if (n.includes("pro")) return "pro";
+    if (n.includes("premium")) return "premium";
+    return "free";
   };
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+  // If we have a subscription id, fetch its name once to decide tier.
+  useEffect(() => {
+    let alive = true;
 
-  const menuItems = [
-    { text: "Home", path: "/home" },
-    { text: "About Us", path: "/about" },
-    { text: "Chat", path: "/chat" },
-    { text: "Generate Image", path: "/generate-image" },
-    { text: "Subscription Plan", path: "/subscription" },
-  ];
+    const setFromName = (name) => alive && setTier(normalizeTier(name));
+
+    if (!subscriptionId) {
+      setTier("free");
+      return () => { alive = false; };
+    }
+
+    (async () => {
+      try {
+        const res = await fetch(`${API_BASE}/subscriptions/${subscriptionId}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        });
+        if (!res.ok) throw new Error();
+        const json = await res.json();
+        // json may be {data:{...}} or plain object
+        const sub = json?.data ?? json;
+        setFromName(sub?.name);
+        // cache the name to avoid refetches next time
+        if (sub?.name) sessionStorage.setItem("subscriptionName", sub.name);
+      } catch {
+        // fall back to cached name if any, else default to free
+        const cached = sessionStorage.getItem("subscriptionName");
+        if (cached) setFromName(cached);
+        else setTier("free");
+      }
+    })();
+
+    return () => { alive = false; };
+  }, [subscriptionId, token]);
+
+  // Build menu items by tier
+  const menuItems = useMemo(() => {
+    const items = [
+      { text: "Home", path: "/home" },
+      { text: "About Us", path: "/about" },
+      { text: "Chat", path: "/chat" },
+      { text: "Subscription Plan", path: "/subscription" },
+    ];
+    if (tier === "premium" || tier === "pro") {
+      items.splice(3, 0, { text: "Generate Image", path: "/generate-image" }); // insert before Subscription
+    }
+    if (tier === "pro") {
+      items.push({ text: "Advanced Model", path: "/advanced-model" });
+    }
+    return items;
+  }, [tier]);
+
+  const handleMenuOpen = (e) => setAnchorEl(e.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
 
   return (
     <AppBar position="static" sx={{ backgroundColor: "#1a1a2e" }}>
       <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        {/* Clickable Logo Section */}
+        {/* Logo (click -> Home) */}
         <Box
           display="flex"
           alignItems="center"
-          sx={{
-            cursor: "pointer",
-            "&:hover": {
-              transform: "scale(1.05)",
-              transition: "0.3s ease-in-out",
-            },
-          }}
-          onClick={() => navigate("/home")} // 👈 Click navigates to Home
+          sx={{ cursor: "pointer", "&:hover": { transform: "scale(1.05)", transition: "0.3s" } }}
+          onClick={() => navigate("/home")}
         >
-          <img
-            src="/assets/logo.png"
-            alt="Aurora AI Logo"
-            style={{ width: 50, height: 50, marginRight: 10 }}
-          />
+          <img src="/assets/logo.png" alt="Aurora AI Logo" style={{ width: 50, height: 50, marginRight: 10 }} />
           <Typography
             variant="h5"
             fontWeight="bold"
@@ -69,9 +116,9 @@ const Navbar = ({ user, onLogout }) => {
 
         {/* Desktop Menu */}
         <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
-          {menuItems.map((item, index) => (
+          {menuItems.map((item) => (
             <MUIButton
-              key={index}
+              key={item.path}
               color="inherit"
               onClick={() => navigate(item.path)}
               sx={{
@@ -92,13 +139,12 @@ const Navbar = ({ user, onLogout }) => {
           ))}
         </Box>
 
-        {/* User Section */}
+        {/* User + Logout + Mobile trigger */}
         <Box display="flex" alignItems="center">
-          <Typography variant="body1" sx={{ marginRight: 2 }}>
+          <Typography variant="body1" sx={{ mr: 2 }}>
             {user ? `Welcome, ${user.name}` : "Guest"}
           </Typography>
 
-          {/* Logout Button (Gradient) */}
           <Button
             text="Logout"
             onClick={onLogout}
@@ -107,33 +153,21 @@ const Navbar = ({ user, onLogout }) => {
               color: "#fff",
               fontWeight: "bold",
               boxShadow: "0 0 20px rgba(255, 91, 153, 0.6)",
-              "&:hover": {
-                boxShadow: "0 0 40px rgba(255, 91, 153, 1)",
-                transform: "scale(1.05)",
-              },
+              "&:hover": { boxShadow: "0 0 40px rgba(255, 91, 153, 1)", transform: "scale(1.05)" },
             }}
           />
 
-          {/* Mobile Menu Button */}
-          <IconButton
-            sx={{ display: { xs: "flex", md: "none" }, color: "white" }}
-            onClick={handleMenuOpen}
-          >
+          <IconButton sx={{ display: { xs: "flex", md: "none" }, color: "white" }} onClick={handleMenuOpen}>
             <MenuIcon />
           </IconButton>
         </Box>
       </Toolbar>
 
-      {/* Mobile Menu Dropdown */}
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={handleMenuClose}
-        sx={{ display: { xs: "block", md: "none" } }}
-      >
-        {menuItems.map((item, index) => (
+      {/* Mobile Menu */}
+      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose} sx={{ display: { xs: "block", md: "none" } }}>
+        {menuItems.map((item) => (
           <MenuItem
-            key={index}
+            key={item.path}
             onClick={() => {
               navigate(item.path);
               handleMenuClose();

@@ -27,6 +27,7 @@ function App() {
       role: sessionStorage.getItem("userRole") || null,
       name: sessionStorage.getItem("userName") || null,
       token: sessionStorage.getItem("userToken") || null,
+      subscription_id: sessionStorage.getItem("subscription_id") || null,
     };
   }
 

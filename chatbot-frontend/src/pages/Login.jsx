@@ -38,7 +38,7 @@ const Login = ({ setUserData }) => {
       }
 
       // Extract user data
-      const { id, user_role, name } = data.user;
+      const { id, user_role, name, subscription_id } = data.user;
       const { token } = data;
 
       // Update sessionStorage
@@ -46,6 +46,7 @@ const Login = ({ setUserData }) => {
       sessionStorage.setItem("userRole", user_role);
       sessionStorage.setItem("userName", name);
       sessionStorage.setItem("userToken", token);
+      sessionStorage.setItem("subscription_id", subscription_id);
 
       //Update the React state 
       setUserData({ id, user_role, name, token });
