@@ -20,6 +20,7 @@ import Footer from "./components/Footer";
 import DynamicBreadcrumbs from "./components/DynamicBreadcrumbs";
 import React, { useState, useEffect } from "react";
 import  Analytics  from "./pages/Analytics";
+import UserManagement from './pages/UserManagement';
 
 function App() {
   const [userData, setUserData] = useState(getStoredUserData());
@@ -57,7 +58,8 @@ const AppContent = ({ userData, setUserData }) => {
   }, [userData, location.pathname, navigate]);
 
   let showNavbar = Boolean(userData.token);
-  let showBreadcrumbs = showNavbar && location.pathname !== "/home";
+  let hideOn = ["/home", "/admin-dashboard"];
+  let showBreadcrumbs = showNavbar && !hideOn.includes(location.pathname);
 
   const handleLogout = () => {
     sessionStorage.clear();
@@ -81,6 +83,7 @@ const AppContent = ({ userData, setUserData }) => {
         <Route path="/advanced-model" element={<AdvancedModel userData={userData} />} />
         <Route path="/admin-dashboard" element={<AdminDashboard userData={userData} />} />
         <Route path="/analytics"  element={<Analytics/>}/>
+        <Route path="/user-management"  element={<UserManagement/>}/>
       </Routes>
       {showNavbar && <Footer />}
     </>
