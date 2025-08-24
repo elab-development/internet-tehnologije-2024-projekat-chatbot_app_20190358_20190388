@@ -19,16 +19,26 @@ const Navbar = ({ user, onLogout }) => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = useState(null);
 
-  // read session values (works with your storage keys)
+  // --- Resolve role (props or sessionStorage), normalized
+  const role = useMemo(() => {
+    const raw =
+      user?.user_role ??
+      user?.role ??
+      sessionStorage.getItem("userRole") ??
+      "";
+    return String(raw).trim().toLowerCase();
+  }, [user]);
+  const isAdmin = role === "admin";
+
+  // --- Session values used for non-admin tiered menu
   const token = useMemo(() => sessionStorage.getItem("userToken") || null, []);
   const subscriptionId = useMemo(() => {
     const v = sessionStorage.getItem("subscription_id");
     return v && v !== "null" && v !== "" ? Number(v) : null;
   }, []);
 
+  // --- Subscription tier (non-admin only)
   const [tier, setTier] = useState("free"); // "free" | "premium" | "pro"
-
-  // Normalize plan name -> tier
   const normalizeTier = (name) => {
     const n = (name || "").toLowerCase();
     if (n.includes("pro")) return "pro";
@@ -36,15 +46,17 @@ const Navbar = ({ user, onLogout }) => {
     return "free";
   };
 
-  // If we have a subscription id, fetch its name once to decide tier.
   useEffect(() => {
+    if (isAdmin) return; // admins don't need tier logic
     let alive = true;
 
     const setFromName = (name) => alive && setTier(normalizeTier(name));
 
     if (!subscriptionId) {
       setTier("free");
-      return () => { alive = false; };
+      return () => {
+        alive = false;
+      };
     }
 
     (async () => {
@@ -54,24 +66,33 @@ const Navbar = ({ user, onLogout }) => {
         });
         if (!res.ok) throw new Error();
         const json = await res.json();
-        // json may be {data:{...}} or plain object
         const sub = json?.data ?? json;
         setFromName(sub?.name);
-        // cache the name to avoid refetches next time
         if (sub?.name) sessionStorage.setItem("subscriptionName", sub.name);
       } catch {
-        // fall back to cached name if any, else default to free
         const cached = sessionStorage.getItem("subscriptionName");
         if (cached) setFromName(cached);
         else setTier("free");
       }
     })();
 
-    return () => { alive = false; };
-  }, [subscriptionId, token]);
+    return () => {
+      alive = false;
+    };
+  }, [isAdmin, subscriptionId, token]);
 
-  // Build menu items by tier
+  // --- Build menu items
   const menuItems = useMemo(() => {
+    if (isAdmin) {
+      // ✅ Admin menu: include Home -> /admin-dashboard, then Analytics, User Management
+      return [
+        { text: "Home", path: "/admin-dashboard" },
+        { text: "Analytics", path: "/analytics" },
+        { text: "User Management", path: "/user-management" },
+      ];
+    }
+
+    // Non-admin: your original logic
     const items = [
       { text: "Home", path: "/home" },
       { text: "About Us", path: "/about" },
@@ -79,28 +100,37 @@ const Navbar = ({ user, onLogout }) => {
       { text: "Subscription Plan", path: "/subscription" },
     ];
     if (tier === "premium" || tier === "pro") {
-      items.splice(3, 0, { text: "Generate Image", path: "/generate-image" }); // insert before Subscription
+      items.splice(3, 0, { text: "Generate Image", path: "/generate-image" }); // before Subscription
     }
     if (tier === "pro") {
       items.push({ text: "Advanced Model", path: "/advanced-model" });
     }
     return items;
-  }, [tier]);
+  }, [isAdmin, tier]);
 
   const handleMenuOpen = (e) => setAnchorEl(e.currentTarget);
   const handleMenuClose = () => setAnchorEl(null);
 
+  // ✅ Logo click goes to admin dashboard for admins; /home otherwise
+  const homePath = isAdmin ? "/admin-dashboard" : "/home";
+
   return (
     <AppBar position="static" sx={{ backgroundColor: "#1a1a2e" }}>
-      <Toolbar sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        {/* Logo (click -> Home) */}
+      <Toolbar
+        sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
+      >
+        {/* Logo (click -> Home or Admin Dashboard) */}
         <Box
           display="flex"
           alignItems="center"
           sx={{ cursor: "pointer", "&:hover": { transform: "scale(1.05)", transition: "0.3s" } }}
-          onClick={() => navigate("/home")}
+          onClick={() => navigate(homePath)}
         >
-          <img src="/assets/logo.png" alt="Aurora AI Logo" style={{ width: 50, height: 50, marginRight: 10 }} />
+          <img
+            src="/assets/logo.png"
+            alt="Aurora AI Logo"
+            style={{ width: 50, height: 50, marginRight: 10 }}
+          />
           <Typography
             variant="h5"
             fontWeight="bold"
@@ -157,14 +187,22 @@ const Navbar = ({ user, onLogout }) => {
             }}
           />
 
-          <IconButton sx={{ display: { xs: "flex", md: "none" }, color: "white" }} onClick={handleMenuOpen}>
+          <IconButton
+            sx={{ display: { xs: "flex", md: "none" }, color: "white" }}
+            onClick={handleMenuOpen}
+          >
             <MenuIcon />
           </IconButton>
         </Box>
       </Toolbar>
 
       {/* Mobile Menu */}
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose} sx={{ display: { xs: "block", md: "none" } }}>
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        sx={{ display: { xs: "block", md: "none" } }}
+      >
         {menuItems.map((item) => (
           <MenuItem
             key={item.path}

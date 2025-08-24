@@ -52,8 +52,12 @@ const Login = ({ setUserData }) => {
       setUserData({ id, user_role, name, token });
 
       alert("Welcome to Aurora AI!");
-
-      navigate(user_role === "admin" ? "/dashboard" : "/home");
+      const isAdmin = user_role === "admin";
+      if(isAdmin){
+        window.location.replace("/admin-dashboard")
+      }else{
+        window.location.replace("/home")
+      }
     } catch (error) {
       setError(error.message || "Something went wrong. Please try again.");
     }
