@@ -16,7 +16,9 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Administrator',
             'email' => 'admin@godmode.com',
-            'password' => bcrypt('admin123')
+            'user_role' => 'admin',
+            'password' => bcrypt('admin123'),
+            'subscription_id' => null,
         ]);
 
         $this->call([

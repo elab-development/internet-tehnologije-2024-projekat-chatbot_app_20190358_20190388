@@ -24,6 +24,7 @@ class AuthController extends Controller
             'email' => $validated['email'],
             'user_role' => 'regular',
             'password' => Hash::make($validated['password']),
+            'subscription_id' => '1'
         ]);
        $token = $user->createToken('auth_token')->plainTextToken;
        return response()->json([

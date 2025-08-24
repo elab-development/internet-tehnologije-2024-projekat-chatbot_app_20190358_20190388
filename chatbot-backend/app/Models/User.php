@@ -23,7 +23,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'user_role'
+        'user_role',
+        'subscription_id',
     ];
 
     /**
@@ -48,6 +49,11 @@ class User extends Authenticatable
     public function chatHistories()
     {
         return $this->hasMany(ChatHistory::class);
+    }
+
+    public function subscription()
+    {
+        return $this->belongsTo(Subscription::class);
     }
 
 }

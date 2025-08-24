@@ -4,11 +4,16 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\ChatHistoryController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SubscriptionController;
+use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']); 
 Route::post('/login', [AuthController::class, 'login']); 
 
 Route::middleware('auth:sanctum')->group(function () {
+
+    Route::patch('/users/{user}/subscription', [UserController::class, 'setSubscription']);
+    Route::apiResource('subscriptions', SubscriptionController::class);
 
     Route::patch('/chatbots/{id}/version', [ChatbotController::class, 'updateVersion']); 
     Route::put('/chatbots/{id}', [ChatbotController::class, 'updateChatbot']);

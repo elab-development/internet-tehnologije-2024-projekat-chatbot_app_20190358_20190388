@@ -19,6 +19,8 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'user_role' => $this->user_role,
+            'subscription_id' => $this->subscription_id,
+            'subscription'    => new SubscriptionResource($this->whenLoaded('subscription')),
         ];
     }
 }

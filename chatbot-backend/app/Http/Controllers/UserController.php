@@ -103,4 +103,18 @@ class UserController extends Controller
             ]
         ], 200);
     }
+
+    public function setSubscription(Request $request, User $user)
+    {
+        $data = $request->validate([
+            'subscription_id' => ['nullable', 'exists:subscriptions,id'],
+        ]);
+
+        $user->update($data);
+
+        // Return the updated user with subscription details
+        return (new UserResource($user->load('subscription')))
+            ->response()
+            ->setStatusCode(200);
+    }
 }
