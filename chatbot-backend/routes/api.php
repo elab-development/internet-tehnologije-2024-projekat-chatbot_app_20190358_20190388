@@ -5,12 +5,14 @@ use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\ChatHistoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SubscriptionController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdvancedChatController;
 
 Route::post('/register', [AuthController::class, 'register']); 
 Route::post('/login', [AuthController::class, 'login']); 
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/advanced-chat-history', [AdvancedChatController::class, 'index']);
+    Route::post('/advanced-chat-history', [AdvancedChatController::class, 'store']);
 
     Route::patch('/users/{user}/subscription', [UserController::class, 'setSubscription']);
     Route::apiResource('subscriptions', SubscriptionController::class);
