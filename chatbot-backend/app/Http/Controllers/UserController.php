@@ -6,6 +6,8 @@ use App\Models\User;
 use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use App\Models\Subscription;
 
 class UserController extends Controller
 {
@@ -117,4 +119,43 @@ class UserController extends Controller
             ->response()
             ->setStatusCode(200);
     }
+
+    public function statistics()
+    {
+        if (!Auth::check() || Auth::user()->user_role !== 'admin') {
+            return response()->json(['error' => 'Unauthorized action.'], 403);
+        }
+
+        // Exclude admins for subscription stats (only regular users counted)
+        $totalUsers   = User::count();
+        $admins       = User::where('user_role', 'admin')->count();
+        $regulars     = User::where('user_role', '!=', 'admin')->count();
+
+        $freeCount    = User::where('user_role', '!=', 'admin')
+                            ->whereNull('subscription_id')
+                            ->count();
+
+        // counts by plan name for users that have a subscription_id
+        $plans = User::query()
+            ->select('subscriptions.id as id', 'subscriptions.name as name', DB::raw('COUNT(users.id) as count'))
+            ->join('subscriptions', 'subscriptions.id', '=', 'users.subscription_id')
+            ->where('users.user_role', '!=', 'admin')
+            ->groupBy('subscriptions.id', 'subscriptions.name')
+            ->orderBy('subscriptions.name')
+            ->get();
+
+        $paidCount = $plans->sum('count');
+
+        return response()->json([
+            'totals' => [
+                'total_users' => $totalUsers,
+                'admins'      => $admins,
+                'regulars'    => $regulars,
+                'free'        => $freeCount,
+                'paid'        => $paidCount,
+            ],
+            'plans' => $plans, // array of { id, name, count }
+        ], 200);
+    }
+
 }

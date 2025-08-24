@@ -23,11 +23,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/chat-history', [ChatHistoryController::class, 'index']);
     Route::post('/chat-history', [ChatHistoryController::class, 'create']); 
     Route::delete('/chat-history/{id}', [ChatHistoryController::class, 'destroy']);
-
+    
+    Route::get('/users/statistics', [UserController::class, 'statistics']);
     Route::get('/users/search', [UserController::class, 'search']);
     Route::resource('users', UserController::class)->only(['index', 'show', 'destroy']);
 
     Route::post('/reset-password', [AuthController::class, 'resetPassword']);
+    
     Route::post('/logout', [AuthController::class, 'logout']);
 });
     
