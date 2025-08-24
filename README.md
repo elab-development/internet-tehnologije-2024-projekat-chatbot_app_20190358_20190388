@@ -11,13 +11,6 @@
 - [Uloge korisnika](#uloge-korisnika)
 - [Arhitektura](#arhitektura)
 - [Instalacija i pokretanje](#instalacija-i-pokretanje)
-  - [Backend (Laravel)](#backend-laravel)
-  - [Frontend (React)](#frontend-react)
-  - [Primer .env fajlova](#primer-env-fajlova)
-- [Rute i API (skraćeni pregled)](#rute-i-api-skraceni-pregled)
-- [Struktura projekta](#struktura-projekta)
-- [Napomene o bezbednosti](#napomene-o-bezbednosti)
-- [Licenca](#licenca)
 
 ---
 
