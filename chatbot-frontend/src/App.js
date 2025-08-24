@@ -13,11 +13,13 @@ import AboutUs from "./pages/AboutUs";
 import Chat from "./pages/Chat"; 
 import GenerateImage from "./pages/GenerateImage"; 
 import SubscriptionPlan from "./pages/SubscriptionPlan";
-import AdvancedModel from "./pages/AdvancedModel"; 
+import AdvancedModel from "./pages/AdvancedModel";
+import AdminDashboard from "./pages/AdminDashboard"; 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import DynamicBreadcrumbs from "./components/DynamicBreadcrumbs";
 import React, { useState, useEffect } from "react";
+import  Analytics  from "./pages/Analytics";
 
 function App() {
   const [userData, setUserData] = useState(getStoredUserData());
@@ -77,6 +79,8 @@ const AppContent = ({ userData, setUserData }) => {
         <Route path="/generate-image" element={<GenerateImage/>} /> 
         <Route path="/subscription" element={<SubscriptionPlan/>} />
         <Route path="/advanced-model" element={<AdvancedModel userData={userData} />} />
+        <Route path="/admin-dashboard" element={<AdminDashboard userData={userData} />} />
+        <Route path="/analytics"  element={<Analytics/>}/>
       </Routes>
       {showNavbar && <Footer />}
     </>
