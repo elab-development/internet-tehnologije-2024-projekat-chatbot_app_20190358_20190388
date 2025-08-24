@@ -71,10 +71,6 @@ class AuthController extends Controller
             'email' => 'required|string|email',
             'set_password' => 'required|string|min:8'
         ]);
-
-        if (!Auth::check() || Auth::user()->user_role === 'admin') {
-            return response()->json(['error' => 'Unauthorized action.'], 403);
-        }
     
         $user = User::where('email', $validated['email'])->first();
         

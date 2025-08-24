@@ -9,6 +9,7 @@ use App\Http\Controllers\AdvancedChatController;
 
 Route::post('/register', [AuthController::class, 'register']); 
 Route::post('/login', [AuthController::class, 'login']); 
+Route::post('/reset-password', [AuthController::class, 'resetPassword']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/advanced-chat-history', [AdvancedChatController::class, 'index']);
@@ -27,8 +28,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/statistics', [UserController::class, 'statistics']);
     Route::get('/users/search', [UserController::class, 'search']);
     Route::resource('users', UserController::class)->only(['index', 'show', 'destroy']);
-
-    Route::post('/reset-password', [AuthController::class, 'resetPassword']);
     
     Route::post('/logout', [AuthController::class, 'logout']);
 });
