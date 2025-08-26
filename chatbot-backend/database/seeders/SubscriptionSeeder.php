@@ -15,8 +15,8 @@ class SubscriptionSeeder extends Seeder
     {
         $plans = [
             ['name' => 'Free',    'price' => 0.00,  'interval' => 'monthly', 'description' => 'Basic features',        'is_active' => true],
-            ['name' => 'Pro',     'price' => 9.99,  'interval' => 'monthly', 'description' => 'For active users',      'is_active' => true],
-            ['name' => 'Premium', 'price' => 19.99, 'interval' => 'monthly', 'description' => 'All features unlocked', 'is_active' => true],
+            ['name' => 'Pro',     'price' => 19.99,  'interval' => 'monthly', 'description' => 'For active users',      'is_active' => true],
+            ['name' => 'Premium', 'price' => 9.99, 'interval' => 'monthly', 'description' => 'All features unlocked', 'is_active' => true],
         ];
 
         foreach ($plans as $plan) {
